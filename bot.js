@@ -7,23 +7,20 @@ const prefix = `.`;
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 
-// Delete specified channel if empty for 10 seconds.
-// To Do:
-// Scan all channels for member size every x seconds && delete if empty
-
-    let chan = client.channels.cache.get('726952777753821485');
-    let mem = chan.members;
-    console.log(chan.members.size);
-    mem.map(member => console.log(member.user.username));
+// Delete specified channel if empty for 60 seconds.
+    let channelList = client.channels.cache;
 
     setInterval(function() {
-        if(chan && chan.members.size <= 0) {
-            chan.delete('Cleaning up old server..')
-            .then(console.log("Channel clean up completed."))
-            .catch(function(error) {console.log(error)
-            });
-        } 
-    }, 10 * 1000);
+        channelList.map(channel => {
+            if(channel.members.size <= 0) {
+                channel.delete('Cleaning up empty voice channel..')
+                .then(console.log("Channel clean up completed."))
+                .catch(function(error) {console.log(error)
+                });
+            } 
+        })
+
+    }, 10 * 6000);
 });
 
 
@@ -31,15 +28,26 @@ client.on('ready', () => {
 // Things to Add:
 // 1. Verify name matches a server code format.
 // 2. Verify name does not currently exist.
-// 3. Set VoiceChannel permissions.
-// 4. House users in a lobby so the bot can move them.
+// 3. House users in a lobby so the bot can move them.
 
 client.on('message', async message => {
     if(message.content.startsWith(`${prefix}createChannel`)) {
         const args = message.content.slice(15);
+        let userID = message.member.id;
 
-        message.guild.channels.create(`${args}`, { type: 'voice' })
-        .then(channel => message.member.voice.setChannel(channel.id));
+        message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
+            {
+                id: '726939553281212497',
+                deny: ['VIEW_CHANNEL']
+            },
+
+            {
+                id: userID,
+                allow: ['VIEW_CHANNEL', 'CONNECT'],
+            }
+        ]})
+        .then(channel => message.member.voice.setChannel(channel.id))
+        .catch(function(error) {console.log(error)});
 
         console.log(`Created ${args} and moved ${message.member.user.username} successfully.`);
 
