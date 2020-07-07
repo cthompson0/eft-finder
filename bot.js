@@ -6,52 +6,49 @@ const prefix = `.`;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-
-// Delete specified channel if empty for 60 seconds.
     let channelList = client.channels.cache;
 
     setInterval(function() {
         channelList.map(channel => {
-            if(channel.members.size <= 0) {
-                channel.delete('Cleaning up empty voice channel..')
-                .then(console.log("Channel clean up completed."))
+            if(channel.members.size <= 0 && channel.id !== '730198448837492846')  {
+                channel.delete('Cleaning up empty voice channel(s)..')
                 .catch(function(error) {console.log(error)
                 });
+                console.log("Channel clean up completed.");
             } 
         })
 
-    }, 10 * 6000);
+    }, 10 * 1000);
 });
-
-
-// Spin Up a New Voice Channel
-// Things to Add:
-// 1. Verify name matches a server code format.
-// 2. Verify name does not currently exist.
-// 3. House users in a lobby so the bot can move them.
 
 client.on('message', async message => {
     if(message.content.startsWith(`${prefix}createChannel`)) {
         const args = message.content.slice(15);
         let userID = message.member.id;
+        let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
 
-        message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
-            {
-                id: '726939553281212497',
-                deny: ['VIEW_CHANNEL']
-            },
+        if (!channelExists) {
+            message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
+                {
+                    id: '726939553281212497',
+                    deny: ['VIEW_CHANNEL']
+                },
 
-            {
-                id: userID,
-                allow: ['VIEW_CHANNEL', 'CONNECT'],
+                {
+                    id: userID,
+                    allow: ['VIEW_CHANNEL', 'CONNECT'],
+                }
+            ]})
+            .then(channel => message.member.voice.setChannel(channel.id))
+            .catch(function(error) {console.log(error)});
+
+            console.log(`Created ${args} and moved ${message.member.user.username} successfully.`);
+
+            } else {
+                message.member.voice.setChannel(channelExists.id);
+                console.log(`Moved ${message.member.user.username} successfully.`);
             }
-        ]})
-        .then(channel => message.member.voice.setChannel(channel.id))
-        .catch(function(error) {console.log(error)});
-
-        console.log(`Created ${args} and moved ${message.member.user.username} successfully.`);
-
-    }
+        }
 });
 
 client.login(process.env.DISCORD_TOKEN);
