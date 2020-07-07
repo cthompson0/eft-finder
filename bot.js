@@ -18,14 +18,16 @@ client.on('ready', () => {
             } 
         })
 
-    }, 10 * 1000);
+    }, 10 * 6000);
 });
 
 client.on('message', async message => {
-    if(message.content.startsWith(`${prefix}createChannel`)) {
-        const args = message.content.slice(15);
+    if(message.content.startsWith(`${prefix}join`)) {
+        const args = message.content.slice(6);
         let userID = message.member.id;
         let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
+        console.log(`${args}`);
+        console.log(channelExists);
 
         if (!channelExists) {
             message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
