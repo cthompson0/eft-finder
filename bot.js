@@ -15,7 +15,6 @@ client.on('ready', () => {
                 channel.delete('Cleaning up empty voice channel(s)..')
                 .catch(function(error) {console.log(error)
                 });
-                console.log("Channel clean up completed.");
             } 
         })
 
@@ -27,8 +26,6 @@ client.on('message', async message => {
         const args = message.content.slice(6);
         let userID = message.member.id;
         let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
-        console.log(`${args}`);
-        console.log(channelExists);
 
         if (!channelExists) {
             message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
@@ -45,11 +42,8 @@ client.on('message', async message => {
             .then(channel => message.member.voice.setChannel(channel.id))
             .catch(function(error) {console.log(error)});
 
-            console.log(`Created ${args} and moved ${message.member.user.username} successfully.`);
-
             } else {
                 message.member.voice.setChannel(channelExists.id);
-                console.log(`Moved ${message.member.user.username} successfully.`);
             }
         }
 });
