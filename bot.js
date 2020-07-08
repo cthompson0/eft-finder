@@ -6,11 +6,12 @@ const prefix = `.`;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    const protectedChannels = ['730198448837492846', '730206632264466513'];
     let channelList = client.channels.cache;
 
     setInterval(function() {
         channelList.map(channel => {
-            if(channel.members.size <= 0 && channel.id !== '730198448837492846')  {
+            if(channel.members.size <= 0 && !protectedChannels.includes(channel.id))  {
                 channel.delete('Cleaning up empty voice channel(s)..')
                 .catch(function(error) {console.log(error)
                 });
