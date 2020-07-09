@@ -13,8 +13,7 @@ client.on('ready', () => {
         channelList.map(channel => {
             if(channel.members.size <= 0 && !protectedChannels.includes(channel.id))  {
                 channel.delete('Cleaning up empty voice channel(s)..')
-                .catch(function(error) {console.log(error)
-                });
+                .catch(function(error) {console.log(error)});
             } 
         })
 
@@ -23,7 +22,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
     if(message.content.startsWith(`${prefix}join`)) {
-        const args = message.content.slice(6);
+        const args = message.content.slice(6, 10);
         let userID = message.member.id;
         let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
 
