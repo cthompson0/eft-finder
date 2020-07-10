@@ -22,7 +22,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
     if(message.content.startsWith(`${prefix}join`)) {
-        const args = message.content.slice(6, 10);
+        const args = message.content.slice(6, 10).toUpperCase();
         let userID = message.member.id;
         let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
 
