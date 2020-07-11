@@ -3,10 +3,10 @@ require('dotenv').config();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const prefix = `.`;
+const protectedChannels = ['730198448837492846', '730206632264466513'];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    const protectedChannels = ['730198448837492846', '730206632264466513'];
     let channelList = client.channels.cache;
 
     setInterval(function() {
@@ -22,7 +22,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
     if(message.content.startsWith(`${prefix}join`)) {
-        const args = message.content.slice(6, 10).toUpperCase();
+        let args = message.content.slice(6, 10).toUpperCase();
         let userID = message.member.id;
         let channelExists = message.guild.channels.cache.find(channel => channel.name == `${args}`);
 
