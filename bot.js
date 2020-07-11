@@ -17,7 +17,7 @@ client.on('ready', () => {
             } 
         })
 
-    }, 10 * 6000);
+    }, 10 * 30000);
 });
 
 client.on('message', async message => {
