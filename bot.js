@@ -30,7 +30,7 @@ client.on('message', async message => {
             message.guild.channels.create(`${args}`, { type: 'voice' , permissionOverwrites: [
                 {
                     id: '726939553281212497',
-                    deny: ['VIEW_CHANNEL']
+                    deny: ['CONNECT']
                 },
 
                 {
